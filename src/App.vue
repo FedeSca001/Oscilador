@@ -1,15 +1,12 @@
 <script setup>
 // DOCUMENTACION DE OSCILADOR
 // https://developer.mozilla.org/en-US/docs/Web/API/OscillatorNode/frequency
-console.log('proyecto nuevo');
+import Teclado from './components/Taclado.vue'
 </script>
 
 <template>
-  <header>
-    <h1>Bienvenidos a esta app de musica</h1>
-  </header>
   <main>
-    <h1>Hola mundo</h1>
+    <Teclado/>
   </main>
 </template>
 
