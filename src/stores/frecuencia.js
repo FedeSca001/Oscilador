@@ -1,7 +1,7 @@
 import { defineStore } from 'pinia';
-
+import { ref } from 'vue'
 export const useFrecuenciaStore = defineStore('frecuencia', () => {
-  const ganancia = 0.5;
+  let ganancia = ref( 0.5);
   let audioCtx = null;
   let oscillatorNode = null;
   let gainNode = null;
@@ -21,7 +21,7 @@ export const useFrecuenciaStore = defineStore('frecuencia', () => {
       return;
     }
 
-    gainNode.gain.setValueAtTime(ganancia, audioCtx.currentTime);
+    gainNode.gain.setValueAtTime(ganancia.value, audioCtx.currentTime);
 
     oscillatorNode.connect(gainNode);
     gainNode.connect(audioCtx.destination);
