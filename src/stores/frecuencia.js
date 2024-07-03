@@ -1,11 +1,14 @@
 import { defineStore } from 'pinia';
 import { ref } from 'vue'
+
 export const useFrecuenciaStore = defineStore('frecuencia', () => {
-  let ganancia = ref( 0.5);
+  let ganancia = ref(0.5);
+  let osciladorType = ref('square');
   let audioCtx = null;
   let oscillatorNode = null;
   let gainNode = null;
   let setOctava = ref(3);
+
   const startOscillator = (nota) => {
     if (!audioCtx) {
       audioCtx = new AudioContext();
@@ -15,7 +18,8 @@ export const useFrecuenciaStore = defineStore('frecuencia', () => {
     gainNode = audioCtx.createGain();
 
     if (!isNaN(nota) && isFinite(nota)) {
-      oscillatorNode.frequency.setValueAtTime(nota*setOctava.value, audioCtx.currentTime);
+      oscillatorNode.type = osciladorType.value;
+      oscillatorNode.frequency.setValueAtTime(nota * setOctava.value, audioCtx.currentTime);
     } else {
       console.error('Valor de frecuencia no válido:', nota);
       return;
@@ -54,14 +58,20 @@ export const useFrecuenciaStore = defineStore('frecuencia', () => {
     { nota: 'si', frecuencia: 493.883 }
   ];
 
-  const incrementOctava = ()=>{
+  const incrementOctava = () => {
     setOctava.value = setOctava.value * 2;
     console.log(setOctava.value);
   }
-  const decrementOctava = ()=>{
+
+  const decrementOctava = () => {
     setOctava.value = setOctava.value / 2;
     console.log(setOctava.value);
   }
+
+  const setOscilatorType = (inputString) => {
+    osciladorType.value = inputString;
+  }
+
   return {
     ganancia,
     octava,
@@ -69,5 +79,7 @@ export const useFrecuenciaStore = defineStore('frecuencia', () => {
     stopOscillator,
     incrementOctava,
     decrementOctava,
+    setOscilatorType,
+    osciladorType
   };
 });

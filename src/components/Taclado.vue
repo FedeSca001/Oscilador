@@ -4,22 +4,32 @@ import { ref } from 'vue'
 import Tecla from './Tecla.vue'
 
 const frecuenciaStore = useFrecuenciaStore()
-const freq = ref (frecuenciaStore.octava)
+const freq = ref(frecuenciaStore.octava)
+const selectedOscillatorType = ref(frecuenciaStore.osciladorType)
+
+const changeOscillatorType = () => {
+  frecuenciaStore.setOscilatorType(selectedOscillatorType.value)
+}
 </script>
 
 <template>
   <h1>Teclado</h1>
   <ul class="contenedor-notas">
-    <li v-for="frecuencia in freq " :key="freq.nota" class="nota-individual">
-        <Tecla v-if="frecuencia.nota.length < 3" class="nota-normal" 
-          :prop="frecuencia.frecuencia">{{ frecuencia.nota }}</Tecla>
-        <Tecla v-else class="nota-sostenida" 
-          :prop="frecuencia.frecuencia"/>
+    <li v-for="frecuencia in freq" :key="frecuencia.nota" class="nota-individual">
+      <Tecla v-if="frecuencia.nota.length < 3" class="nota-normal" 
+        :prop="frecuencia.frecuencia">{{ frecuencia.nota }}</Tecla>
+      <Tecla v-else class="nota-sostenida" 
+        :prop="frecuencia.frecuencia"/>
     </li>
   </ul>
   <div class="select-octava">
     <button class="bajar-octava" @click="frecuenciaStore.decrementOctava"><</button>
-  --
+    <select class="oscillator-selector" v-model="selectedOscillatorType" @change="changeOscillatorType">
+      <option value="sine">Sine</option>
+      <option value="square">Square</option>
+      <option value="sawtooth">Sawtooth</option>
+      <option value="triangle">Triangle</option>
+    </select>
     <button class="subir-octava" @click="frecuenciaStore.incrementOctava">></button>
   </div>
 </template>
@@ -60,7 +70,7 @@ const freq = ref (frecuenciaStore.octava)
   background-color: black;
   border: 1px solid #000;
   position: absolute;
-  left: -30px; /* Para ajustar la posición sobre la nota blanca */
+  left: -30px;
   z-index: 2;
 }
 
@@ -93,9 +103,17 @@ const freq = ref (frecuenciaStore.octava)
   background-color: #800303;
 }
 
-.select-octava span {
-  font-size: 1.2rem;
-  font-weight: bold;
+.oscillator-selector {
+  padding: 0.5rem;
+  border: 1px solid #5e0101;
+  border-radius: 4px;
+  font-size: 1rem;
+  background-color: #fff;
   color: #333;
+}
+
+.oscillator-selector:focus {
+  outline: none;
+  border-color: #800303;
 }
 </style>
