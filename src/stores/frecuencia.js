@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia';
-import { computed, ref } from 'vue'
+import { ref } from 'vue'
 export const useFrecuenciaStore = defineStore('frecuencia', () => {
   let ganancia = ref( 0.5);
   let audioCtx = null;

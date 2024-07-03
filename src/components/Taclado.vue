@@ -65,6 +65,7 @@ const freq = ref (frecuenciaStore.octava)
 }
 
 .select-octava {
+  width: max-content;
   display: flex;
   align-items: center;
   justify-content: center;
