@@ -15,7 +15,10 @@ const changeOscillatorType = () => {
 <template>
   <h1>Teclado</h1>
   <ul class="contenedor-notas">
-    <li v-for="frecuencia in freq" :key="frecuencia.nota" class="nota-individual">
+    <li v-for="frecuencia in freq" :key="frecuencia.nota" class="nota-individual"
+    @mousedown="frecuenciaStore.startOscillator(frecuencia.frecuencia)"
+    @mouseup="frecuenciaStore.stopOscillator(frecuencia.frecuencia)"
+    @mouseleave="frecuenciaStore.stopOscillator(frecuencia.frecuencia)">
       <Tecla v-if="frecuencia.nota.length < 3" class="nota-normal" 
         :prop="frecuencia.frecuencia">{{ frecuencia.nota }}</Tecla>
       <Tecla v-else class="nota-sostenida" 

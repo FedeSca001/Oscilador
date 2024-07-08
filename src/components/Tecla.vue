@@ -14,10 +14,7 @@ const { startOscillator, stopOscillator } = frecuenciaStore;
 </script>
 
 <template>
-  <div class="tecla"
-    @mousedown="startOscillator(props.prop)"
-    @mouseup="stopOscillator"
-    @mouseleave="stopOscillator">
+  <div class="tecla">
   </div>
 </template>
 
