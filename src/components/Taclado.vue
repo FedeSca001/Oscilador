@@ -14,39 +14,51 @@ const changeOscillatorType = () => {
 </script>
 
 <template>
-  <h1>Teclado</h1>
-  <ul class="contenedor-notas">
-    <li v-for="frecuencia in freq" :key="frecuencia.nota" class="nota-individual"
-    @mousedown="frecuenciaStore.startOscillator(frecuencia.frecuencia)"
-    @mouseup="frecuenciaStore.stopOscillator(frecuencia.frecuencia)"
-    @mouseleave="frecuenciaStore.stopOscillator(frecuencia.frecuencia)">
-      <Tecla v-if="frecuencia.nota.length < 4" class="nota-normal"/>
-      <Tecla v-else class="nota-sostenida"/>
-    </li>
-  </ul>
-  <div class="select-octava">
-    <button class="bajar-octava" @click="frecuenciaStore.decrementOctava"><</button>
-    <select class="oscillator-selector" v-model="selectedOscillatorType" @change="changeOscillatorType">
-      <option value="sine">Sine</option>
-      <option value="square">Square</option>
-      <option value="sawtooth">Sawtooth</option>
-      <option value="triangle">Triangle</option>
-    </select>
-    <button class="subir-octava" @click="frecuenciaStore.incrementOctava">></button>
-    <SelectGain/>
+  <div class="teclado-contenedor">
+    <ul class="contenedor-notas">
+      <li v-for="frecuencia in freq" :key="frecuencia.nota" class="nota-individual"
+      @mousedown="frecuenciaStore.startOscillator(frecuencia.frecuencia)"
+      @mouseup="frecuenciaStore.stopOscillator(frecuencia.frecuencia)"
+      @mouseleave="frecuenciaStore.stopOscillator(frecuencia.frecuencia)">
+        <Tecla v-if="frecuencia.nota.length < 4" class="nota-normal"/>
+        <Tecla v-else class="nota-sostenida"/>
+      </li>
+    </ul>
+    <div class="select-octava">
+      <button class="bajar-octava" @click="frecuenciaStore.decrementOctava"><</button>
+      <select class="oscillator-selector" v-model="selectedOscillatorType" @change="changeOscillatorType">
+        <option value="sine">Sine</option>
+        <option value="square">Square</option>
+        <option value="sawtooth">Sawtooth</option>
+        <option value="triangle">Triangle</option>
+      </select>
+      <button class="subir-octava" @click="frecuenciaStore.incrementOctava">></button>
+      <SelectGain/>
+    </div>
+  </div>
+  <div class="muestra-nota-contenedor">
+    <p class="muestra-nota">{{ frecuenciaStore.frecuenciaActual.toFixed(2) }}</p>
   </div>
 </template>
 
 <style scoped>
+.muestra-nota{
+  padding: 3px;
+  margin: 6px;
+}
+.muestra-nota-contenedor{
+  transition: 0.5s;
+  color: #fff;
+}
 .contenedor-notas {
   list-style: none;
   display: flex;
   flex-direction: row;
   position: relative;
-  width: max-content;
   margin: auto;
   padding: 1rem;
-  border: 2px solid #5e0101;
+  background-color: #5e0101;
+  border: 3px solid #5e0101;
   border-radius: 10px;
 }
 

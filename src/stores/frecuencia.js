@@ -6,7 +6,8 @@ export const useFrecuenciaStore = defineStore('frecuencia', () => {
   let osciladorType = ref('sine');
   let audioCtx = null;
   let osciladores = {};
-  let setOctava = ref(3);
+  let setOctava = ref(1);
+  let frecuenciaActual = ref(0);
 
   const startOscillator = (nota) => {
     if (!audioCtx) {
@@ -14,7 +15,7 @@ export const useFrecuenciaStore = defineStore('frecuencia', () => {
     }
 
     const frecuencia = nota * setOctava.value;
-
+    frecuenciaActual.value = frecuencia
     if (osciladores[frecuencia]) {
       return;
     }
@@ -28,7 +29,6 @@ export const useFrecuenciaStore = defineStore('frecuencia', () => {
 
     oscillatorNode.connect(gainNode);
     gainNode.connect(audioCtx.destination);
-
     oscillatorNode.start();
 
     osciladores[frecuencia] = { oscillatorNode, gainNode };
@@ -38,7 +38,6 @@ export const useFrecuenciaStore = defineStore('frecuencia', () => {
   const stopOscillator = (nota) => {
     const frecuencia = nota * setOctava.value;
     const nodes = osciladores[frecuencia];
-
     if (nodes) {
       nodes.oscillatorNode.stop();
       nodes.oscillatorNode.disconnect();
@@ -49,6 +48,8 @@ export const useFrecuenciaStore = defineStore('frecuencia', () => {
       if (Object.keys(osciladores).length === 0) {
         audioCtx.close().then(() => {
           audioCtx = null; // Reseteamos el contexto de audio
+    frecuenciaActual.value = 0;
+
         });
       }
     }
@@ -93,6 +94,7 @@ export const useFrecuenciaStore = defineStore('frecuencia', () => {
     decrementOctava,
     setOscilatorType,
     setGanancia,
-    osciladorType
+    osciladorType,
+    frecuenciaActual
   };
 });

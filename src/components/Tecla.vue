@@ -24,7 +24,7 @@
 }
 
 .tecla:hover {
-  background-color: #9c0000;
+  background-color: #9b2323;
 
   transform: scale(1.05);
 }
