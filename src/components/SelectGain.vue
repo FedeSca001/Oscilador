@@ -37,9 +37,9 @@ onUnmounted(() => {
 <template>
     <div class="knob-container">
       <div class="knob" @mousedown="startDrag"></div>
-      <p>{{ (frecuenciaStore.ganancia * 10).toFixed(1) }}</p>
+      <p class="number-gain">{{ (frecuenciaStore.ganancia * 10).toFixed(1) }}</p>
     </div>
-  </template>
+</template>
 
 <style scoped>
 .knob-container {
@@ -48,15 +48,21 @@ onUnmounted(() => {
   justify-content: center;
   align-items: center;
   margin-top: 20px;
+  transition: 1s;
 }
 
 .knob {
-  width: 50px;
-  height: 50px;
+  width: 40px;
+  height: 40px;
   background-color: #5e0101;
   border-radius: 50%;
   position: relative;
   cursor: pointer;
+}
+
+.knob:hover {
+    transform: scale(1.1);
+    box-shadow: 3px 3px 9px 6px rgba(0, 0, 0, 0.152);
 }
 
 .knob::after {
@@ -68,5 +74,14 @@ onUnmounted(() => {
   height: 15px;
   background-color: #fff;
   transform: translateX(-50%);
+}
+.number-gain{
+    background-color: #5e0101;
+    color: white;
+    margin-top: 9px;
+    border-radius: 6px;
+    padding: 2px;
+    min-width: 35px;
+    text-align: center;
 }
 </style>
