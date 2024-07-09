@@ -24,20 +24,21 @@ const changeOscillatorType = () => {
         <Tecla v-else class="nota-sostenida"/>
       </li>
     </ul>
-    <div class="select-octava">
-      <button class="bajar-octava" @click="frecuenciaStore.decrementOctava"><</button>
-      <select class="oscillator-selector" v-model="selectedOscillatorType" @change="changeOscillatorType">
-        <option value="sine">Sine</option>
-        <option value="square">Square</option>
-        <option value="sawtooth">Sawtooth</option>
-        <option value="triangle">Triangle</option>
-      </select>
-      <button class="subir-octava" @click="frecuenciaStore.incrementOctava">></button>
-      <SelectGain/>
+      <div class="select-octava">
+        <button class="bajar-octava" @click="frecuenciaStore.decrementOctava"><</button>
+        <select class="oscillator-selector" v-model="selectedOscillatorType" @change="changeOscillatorType">
+          <option value="sine">Sine</option>
+          <option value="square">Square</option>
+          <option value="sawtooth">Sawtooth</option>
+          <option value="triangle">Triangle</option>
+        </select>
+        <button class="subir-octava" @click="frecuenciaStore.incrementOctava">></button>
+        <SelectGain/>
+      </div>
     </div>
-  </div>
   <div class="muestra-nota-contenedor">
-    <p class="muestra-nota">{{ frecuenciaStore.frecuenciaActual.toFixed(2) }}</p>
+    <p></p>
+    <p class="muestra-nota">Frecuencia Sonando:<span>{{frecuenciaStore.frecuenciaActual.toFixed(2) }}hz</span></p>
   </div>
 </template>
 
@@ -45,6 +46,11 @@ const changeOscillatorType = () => {
 .muestra-nota{
   padding: 3px;
   margin: 6px;
+}
+.muestra-nota span{
+  font-size: 18pt;
+  margin: 0 15px;
+  color: greenyellow;
 }
 .muestra-nota-contenedor{
   transition: 0.5s;
