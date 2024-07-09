@@ -2,10 +2,10 @@ import { defineStore } from 'pinia';
 import { ref } from 'vue'
 
 export const useFrecuenciaStore = defineStore('frecuencia', () => {
-  let ganancia = ref(0.5);
-  let osciladorType = ref('square');
-  let audioCtx = null; // Inicializamos audioCtx fuera de las funciones para reutilizarlo
-  let osciladores = {}; // Mapa para almacenar osciladores por frecuencia
+  let ganancia = ref(0.3);
+  let osciladorType = ref('sine');
+  let audioCtx = null;
+  let osciladores = {};
   let setOctava = ref(3);
 
   const startOscillator = (nota) => {
@@ -16,7 +16,6 @@ export const useFrecuenciaStore = defineStore('frecuencia', () => {
     const frecuencia = nota * setOctava.value;
 
     if (osciladores[frecuencia]) {
-      console.warn(`El oscilador con la frecuencia ${frecuencia} ya está en ejecución.`);
       return;
     }
 
@@ -81,6 +80,9 @@ export const useFrecuenciaStore = defineStore('frecuencia', () => {
   const setOscilatorType = (inputString) => {
     osciladorType.value = inputString;
   }
+  const setGanancia = (gain)=>{
+    ganancia.value = gain
+  }
 
   return {
     ganancia,
@@ -90,6 +92,7 @@ export const useFrecuenciaStore = defineStore('frecuencia', () => {
     incrementOctava,
     decrementOctava,
     setOscilatorType,
+    setGanancia,
     osciladorType
   };
 });

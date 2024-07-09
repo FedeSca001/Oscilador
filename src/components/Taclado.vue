@@ -2,6 +2,7 @@
 import { useFrecuenciaStore } from '../stores/frecuencia'
 import { ref } from 'vue'
 import Tecla from './Tecla.vue'
+import SelectGain from './SelectGain.vue'
 
 const frecuenciaStore = useFrecuenciaStore()
 const freq = ref(frecuenciaStore.octava)
@@ -19,10 +20,8 @@ const changeOscillatorType = () => {
     @mousedown="frecuenciaStore.startOscillator(frecuencia.frecuencia)"
     @mouseup="frecuenciaStore.stopOscillator(frecuencia.frecuencia)"
     @mouseleave="frecuenciaStore.stopOscillator(frecuencia.frecuencia)">
-      <Tecla v-if="frecuencia.nota.length < 3" class="nota-normal" 
-        :prop="frecuencia.frecuencia">{{ frecuencia.nota }}</Tecla>
-      <Tecla v-else class="nota-sostenida" 
-        :prop="frecuencia.frecuencia"/>
+      <Tecla v-if="frecuencia.nota.length < 4" class="nota-normal"/>
+      <Tecla v-else class="nota-sostenida"/>
     </li>
   </ul>
   <div class="select-octava">
@@ -34,6 +33,7 @@ const changeOscillatorType = () => {
       <option value="triangle">Triangle</option>
     </select>
     <button class="subir-octava" @click="frecuenciaStore.incrementOctava">></button>
+    <SelectGain/>
   </div>
 </template>
 
@@ -47,6 +47,7 @@ const changeOscillatorType = () => {
   margin: auto;
   padding: 1rem;
   border: 2px solid #5e0101;
+  border-radius: 10px;
 }
 
 .nota-individual {
