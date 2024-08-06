@@ -81,12 +81,22 @@ export const useFrecuenciaStore = defineStore('frecuencia', () => {
   const setOscilatorType = (inputString) => {
     osciladorType.value = inputString;
   }
-  const setGanancia = (gain)=>{
-    ganancia.value = gain
+  const setGanancia = (g)=>{
+    console.log(g);
+    ganancia.value = g
   }
-
+  const incrementGanancia = ()=>{
+    console.log(ganancia.value);
+    ganancia.value = ganancia.value + 0.1
+  }
+  const decrementGanancia = ()=>{
+    console.log(ganancia.value);
+    ganancia.value = ganancia.value - 0.1
+  }
   return {
     ganancia,
+    incrementGanancia,
+    decrementGanancia,
     octava,
     startOscillator,
     stopOscillator,

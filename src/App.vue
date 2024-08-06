@@ -5,7 +5,7 @@ import Teclado from './components/Taclado.vue';
 import { useFrecuenciaStore } from './stores/frecuencia';
 
 // Obtiene las funciones del store
-const { startOscillator, stopOscillator } = useFrecuenciaStore();
+const { startOscillator, stopOscillator, incrementGanancia, decrementGanancia } = useFrecuenciaStore();
 
 const keyFrequencyMap = {
   'a': 261.626, // Do (C)
@@ -24,11 +24,16 @@ const keyFrequencyMap = {
 
 document.addEventListener('keydown', (e) => {
   const frecuencia = keyFrequencyMap[e.key];
-  console.log(e.key);
-  if (frecuencia) {
+
+  if (e.key === '+') {
+    incrementGanancia();
+  } else if (e.key === '-') {
+    decrementGanancia()
+  } else if (frecuencia) {
     startOscillator(frecuencia);
   }
 });
+
 
 document.addEventListener('keyup', (e) => {
   const frecuencia = keyFrequencyMap[e.key];

@@ -1,6 +1,6 @@
 <script setup>
 import { useFrecuenciaStore } from '../stores/frecuencia'
-import { ref, onMounted, onUnmounted } from 'vue'
+import { onMounted, onUnmounted } from 'vue'
 
 const frecuenciaStore = useFrecuenciaStore()
 
