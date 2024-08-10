@@ -3,6 +3,7 @@ import { useFrecuenciaStore } from '../stores/frecuencia'
 import { ref } from 'vue'
 import Tecla from './Tecla.vue'
 import SelectGain from './SelectGain.vue'
+import SetCompresor from './SetCompresor.vue'
 
 const frecuenciaStore = useFrecuenciaStore()
 const freq = ref(frecuenciaStore.octava)
@@ -33,6 +34,7 @@ const changeOscillatorType = () => {
     </select>
     <button class="subir-octava" @click="frecuenciaStore.incrementOctava">></button>
     <SelectGain/>
+    <SetCompresor/>
   </div>
   <div class="muestra-nota-contenedor">
     <p class="muestra-nota">Frecuencia Sonando:

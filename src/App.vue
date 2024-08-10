@@ -4,7 +4,6 @@
 import Teclado from './components/Taclado.vue';
 import { useFrecuenciaStore } from './stores/frecuencia';
 
-// Obtiene las funciones del store
 const { startOscillator, stopOscillator, incrementGanancia, decrementGanancia } = useFrecuenciaStore();
 
 const keyFrequencyMap = {

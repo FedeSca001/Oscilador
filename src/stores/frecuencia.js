@@ -8,6 +8,7 @@ export const useFrecuenciaStore = defineStore('frecuencia', () => {
   let osciladores = {};
   let setOctava = ref(1);
   let frecuenciaActual = ref(0);
+  let delayTime = ref(0.3);
 
   const startOscillator = (nota) => {
     if (!audioCtx) {
@@ -15,24 +16,28 @@ export const useFrecuenciaStore = defineStore('frecuencia', () => {
     }
 
     const frecuencia = nota * setOctava.value;
-    frecuenciaActual.value = frecuencia
+    frecuenciaActual.value = frecuencia;
     if (osciladores[frecuencia]) {
       return;
     }
 
     const oscillatorNode = audioCtx.createOscillator();
     const gainNode = audioCtx.createGain();
+    const delayNode = audioCtx.createDelay();
 
     oscillatorNode.type = osciladorType.value;
     oscillatorNode.frequency.setValueAtTime(frecuencia, audioCtx.currentTime);
     gainNode.gain.value = ganancia.value;
+    delayNode.delayTime.value = delayTime.value;
 
+    // Conectamos los nodos: Oscillator -> Gain -> Delay -> Destination
     oscillatorNode.connect(gainNode);
-    gainNode.connect(audioCtx.destination);
+    gainNode.connect(delayNode);
+    delayNode.connect(audioCtx.destination);
     oscillatorNode.start();
 
-    osciladores[frecuencia] = { oscillatorNode, gainNode };
-
+    // Guardamos los nodos en el objeto osciladores
+    osciladores[frecuencia] = { oscillatorNode, gainNode, delayNode };
   };
 
   const stopOscillator = (nota) => {
@@ -42,14 +47,14 @@ export const useFrecuenciaStore = defineStore('frecuencia', () => {
       nodes.oscillatorNode.stop();
       nodes.oscillatorNode.disconnect();
       nodes.gainNode.disconnect();
+      nodes.delayNode.disconnect(); // Desconectamos el DelayNode
 
       delete osciladores[frecuencia];
 
       if (Object.keys(osciladores).length === 0) {
         audioCtx.close().then(() => {
           audioCtx = null; // Reseteamos el contexto de audio
-    frecuenciaActual.value = 0;
-
+          frecuenciaActual.value = 0;
         });
       }
     }
@@ -72,27 +77,35 @@ export const useFrecuenciaStore = defineStore('frecuencia', () => {
 
   const incrementOctava = () => {
     setOctava.value = setOctava.value * 2;
-  }
+  };
 
   const decrementOctava = () => {
     setOctava.value = setOctava.value / 2;
-  }
+  };
 
   const setOscilatorType = (inputString) => {
     osciladorType.value = inputString;
+  };
+
+  const setGanancia = (g) => {
+    ganancia.value = g;
+  };
+
+  const incrementGanancia = () => {
+    if (ganancia.value < 0.7) {
+      ganancia.value = ganancia.value + 0.1;
+    }
+  };
+
+  const decrementGanancia = () => {
+    if (ganancia.value >= 0) {
+      ganancia.value = ganancia.value - 0.1;
+    }
+  };
+  const modificarRetardo = (n)=>{
+    delayTime.value = n;
   }
-  const setGanancia = (g)=>{
-    console.log(g);
-    ganancia.value = g
-  }
-  const incrementGanancia = ()=>{
-    console.log(ganancia.value);
-    ganancia.value = ganancia.value + 0.1
-  }
-  const decrementGanancia = ()=>{
-    console.log(ganancia.value);
-    ganancia.value = ganancia.value - 0.1
-  }
+
   return {
     ganancia,
     incrementGanancia,
@@ -105,6 +118,8 @@ export const useFrecuenciaStore = defineStore('frecuencia', () => {
     setOscilatorType,
     setGanancia,
     osciladorType,
-    frecuenciaActual
+    frecuenciaActual,
+    delayTime,
+    modificarRetardo
   };
 });
