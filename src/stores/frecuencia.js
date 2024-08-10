@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia';
-import { ref } from 'vue'
+import { ref } from 'vue';
 
 export const useFrecuenciaStore = defineStore('frecuencia', () => {
   let ganancia = ref(0.3);
@@ -8,7 +8,9 @@ export const useFrecuenciaStore = defineStore('frecuencia', () => {
   let osciladores = {};
   let setOctava = ref(1);
   let frecuenciaActual = ref(0);
-  let delayTime = ref(0.3);
+  let delayTime = ref(0);
+  let releaseTime = ref(0.1); // En segundos
+  let sustainTime = ref(0.1); // En segundos
 
   const startOscillator = (nota) => {
     if (!audioCtx) {
@@ -24,40 +26,67 @@ export const useFrecuenciaStore = defineStore('frecuencia', () => {
     const oscillatorNode = audioCtx.createOscillator();
     const gainNode = audioCtx.createGain();
     const delayNode = audioCtx.createDelay();
+    const compressorNode = audioCtx.createDynamicsCompressor();
 
     oscillatorNode.type = osciladorType.value;
     oscillatorNode.frequency.setValueAtTime(frecuencia, audioCtx.currentTime);
     gainNode.gain.value = ganancia.value;
     delayNode.delayTime.value = delayTime.value;
 
-    // Conectamos los nodos: Oscillator -> Gain -> Delay -> Destination
+    // Configurar el compresor
+    compressorNode.threshold.setValueAtTime(-50, audioCtx.currentTime);
+    compressorNode.knee.setValueAtTime(40, audioCtx.currentTime);
+    compressorNode.ratio.setValueAtTime(12, audioCtx.currentTime);
+    compressorNode.attack.setValueAtTime(0, audioCtx.currentTime);
+    compressorNode.release.setValueAtTime(releaseTime.value, audioCtx.currentTime);
+
+    // Conectar los nodos: Oscillator -> Gain -> Delay -> Compressor -> Destination
     oscillatorNode.connect(gainNode);
     gainNode.connect(delayNode);
-    delayNode.connect(audioCtx.destination);
+    delayNode.connect(compressorNode);
+    compressorNode.connect(audioCtx.destination);
     oscillatorNode.start();
 
-    // Guardamos los nodos en el objeto osciladores
-    osciladores[frecuencia] = { oscillatorNode, gainNode, delayNode };
+    // Guardar los nodos en el objeto osciladores
+    osciladores[frecuencia] = { oscillatorNode, gainNode, delayNode, compressorNode };
   };
 
   const stopOscillator = (nota) => {
     const frecuencia = nota * setOctava.value;
     const nodes = osciladores[frecuencia];
     if (nodes) {
-      nodes.oscillatorNode.stop();
-      nodes.oscillatorNode.disconnect();
-      nodes.gainNode.disconnect();
-      nodes.delayNode.disconnect(); // Desconectamos el DelayNode
+      const currentTime = audioCtx.currentTime;
 
-      delete osciladores[frecuencia];
+      // Manejar la rampa de ganancia y el tiempo de sostenimiento
+      nodes.gainNode.gain.cancelScheduledValues(currentTime);
+      nodes.gainNode.gain.setValueAtTime(nodes.gainNode.gain.value, currentTime);
 
-      if (Object.keys(osciladores).length === 0) {
-        audioCtx.close().then(() => {
-          audioCtx = null; // Reseteamos el contexto de audio
-          frecuenciaActual.value = 0;
-        });
+      if (sustainTime.value > 0) {
+        nodes.gainNode.gain.linearRampToValueAtTime(0, currentTime + sustainTime.value);
       }
+
+      // Detener el oscilador después del tiempo de sustain
+      setTimeout(() => {
+        nodes.oscillatorNode.stop();
+        nodes.oscillatorNode.disconnect();
+        nodes.gainNode.disconnect();
+        nodes.delayNode.disconnect();
+        nodes.compressorNode.disconnect();
+
+        delete osciladores[frecuencia];
+
+        if (Object.keys(osciladores).length === 0) {
+          audioCtx.close().then(() => {
+            audioCtx = null;
+            frecuenciaActual.value = 0;
+          });
+        }
+      }, sustainTime.value * 1000);
     }
+  };
+
+  const setSustainTime = (value) => {
+    sustainTime.value = value;
   };
 
   const octava = [
@@ -102,9 +131,14 @@ export const useFrecuenciaStore = defineStore('frecuencia', () => {
       ganancia.value = ganancia.value - 0.1;
     }
   };
-  const modificarRetardo = (n)=>{
+
+  const modificarRetardo = (n) => {
     delayTime.value = n;
-  }
+  };
+
+  const setReleaseTime = (value) => {
+    releaseTime.value = value;
+  };
 
   return {
     ganancia,
@@ -120,6 +154,10 @@ export const useFrecuenciaStore = defineStore('frecuencia', () => {
     osciladorType,
     frecuenciaActual,
     delayTime,
-    modificarRetardo
+    modificarRetardo,
+    releaseTime,
+    setReleaseTime,
+    sustainTime,
+    setSustainTime
   };
 });
